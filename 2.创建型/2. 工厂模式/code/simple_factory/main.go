@@ -78,8 +78,8 @@ func (f Factory) CreateOSS() OSS {
 	}
 }
 
-// createAliOSS 生成alioss的实例
-func (Factory) createAliOSS() *Minio {
+// createMinio 生成minio的实例
+func (Factory) createMinio() *Minio {
 	// (省略)获取配置文件中minio的相关配置
 	return &Minio{
 		EndPoint: "minio_endpoint",
@@ -89,8 +89,8 @@ func (Factory) createAliOSS() *Minio {
 	}
 }
 
-// createMinio 生成minio的实例
-func (Factory) createMinio() *AliOSS {
+// createAliOSS 生成alioss的实例
+func (Factory) createAliOSS() *AliOSS {
 	return &AliOSS{
 		EndPoint:  "alioss_endpoint",
 		SecretId:  "alioss_secret_id",
