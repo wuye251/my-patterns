@@ -60,7 +60,6 @@ func (f *ConcreteFactory1) CreateProductA() ProductA {
 	return &ConcreteProductA1{}
 }
 
-
 func (f *ConcreteFactory1) CreateProductB() ProductB {
 	return &ConcreteProductB1{}
 }
