@@ -35,7 +35,7 @@ func NewDecorator(pizza IPizza) IPizza {
 
 // 基础类中不做任何操作, 只负责需要被装饰的对象保存起来  让当前装饰器对象使用
 func (decorator *Decorator) GetPrice() int {
-	return 0
+	return decorator.Pizza.GetPrice()
 }
 
 // 添加西红柿配料的装饰器
@@ -73,10 +73,10 @@ func main() {
 	// 开始装饰这个披萨
 	decorator := NewDecorator(pizza)
 	// 多加一份西红柿
-	tomato := NewTomatoDecorator(decorator)
+	tomatoDecorator := NewTomatoDecorator(decorator)
 	// 多加一份芝士
-	cheese := NewCheeseDecorator(tomato)
+	cheeseDecorator := NewCheeseDecorator(tomatoDecorator)
 
-	fmt.Printf("get pizza with tomato and cheese price is %d\n", cheese.GetPrice())
+	fmt.Printf("get pizza with tomato and cheese price is %d\n", cheeseDecorator.GetPrice())
 
 }

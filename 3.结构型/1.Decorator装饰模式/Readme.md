@@ -9,7 +9,7 @@ package main
 
 import "fmt"
 
-// 实体类和装饰器公用抽象
+// 实体类抽象
 type IPizza interface {
 	GetPrice() int
 }
@@ -31,9 +31,27 @@ func (vegg *VeggPizza) GetPrice() int {
 	return 10
 }
 
+// 装饰器的基本对象 保存当前实体类/装饰器的实例
+type Decorator struct {
+	Pizza IPizza
+}
+
+func NewDecorator(pizza IPizza) IPizza {
+	return &Decorator{Pizza: pizza}
+}
+
+// 基础类中不做任何操作, 只负责需要被装饰的对象保存起来  让当前装饰器对象使用
+func (decorator *Decorator) GetPrice() int {
+	return decorator.Pizza.GetPrice()
+}
+
 // 添加西红柿配料的装饰器
 type TomatoDecorator struct {
-	Pizza IPizza
+	Decorator
+}
+
+func NewTomatoDecorator(pizza IPizza) IPizza {
+	return &TomatoDecorator{Decorator: Decorator{Pizza: pizza}}
 }
 
 func (tomato *TomatoDecorator) GetPrice() int {
@@ -43,7 +61,11 @@ func (tomato *TomatoDecorator) GetPrice() int {
 
 // 添加芝士配料的装饰器
 type CheeseDecorator struct {
-	Pizza IPizza
+	Decorator
+}
+
+func NewCheeseDecorator(pizza IPizza) IPizza {
+	return &CheeseDecorator{Decorator: Decorator{Pizza: pizza}}
 }
 
 func (cheese *CheeseDecorator) GetPrice() int {
@@ -53,13 +75,16 @@ func (cheese *CheeseDecorator) GetPrice() int {
 
 func main() {
 	// 顾客想要一个肉酱披萨
-	var pizza IPizza
-	pizza = &MeatPizza{}
+	pizza := &MeatPizza{}
+
+	// 开始装饰这个披萨
+	decorator := NewDecorator(pizza)
 	// 多加一份西红柿
-	pizza = &TomatoDecorator{Pizza: pizza}
+	tomatoDecorator := NewTomatoDecorator(decorator)
 	// 多加一份芝士
-	pizza = &CheeseDecorator{Pizza: pizza}
-	fmt.Printf("get pizza with tomato and cheese price is %d\n", pizza.GetPrice())
+	cheeseDecorator := NewCheeseDecorator(tomatoDecorator)
+
+	fmt.Printf("get pizza with tomato and cheese price is %d\n", cheeseDecorator.GetPrice())
 
 }
 ```
@@ -72,7 +97,7 @@ func main() {
 
 ## UML
 
-
+![image-20230611004244003](http://img.hahagblog.com/local/image-20230611004244003.png)
 
 ## 继承和装饰的区别
 
@@ -86,22 +111,34 @@ func main() {
 
 5. 装饰模式是一种对象结构型模式
 
+## 优点
 
+1. 装饰器模式是继承关系的一个替代方案, 可以轻量级的扩展被装饰对象的功能
 
+2. 装饰器模式通过使用不同的装饰类以及这些装饰类的排列组合, 可以实现不同的效果
 
+3. 装饰器模式完全遵守开闭原则
 
+## 缺点
 
+1. 装饰器模式会增加许多子类, 一定程度上增加了系统的复杂性
 
+2. 装饰器模式会引入许多的小对象, 大量小对象占据内存, 一定程度上影响程序的性能
 
+3. 装饰器模式采用动态组合的方式, 并没有形成一套静态的组合关系, 复杂度较高
 
+## 适用场景
 
+1. 需要扩展一个类的功能或给一个类添加附加职责
 
+2. 需要动态的给一个对象添加功能，这些功能可以再动态的撤销
 
+3. 需要增加由一些基本功能的排列组合而产生的非常大量的功能，从而使继承关系变得不现实
 
-- 继承(静态扩展)
-- 装饰模式 -- 组合(运行时动态扩展)
+4. 当不能采用生成子类的方法进行扩充时
 
+## 参考
 
-
-- 使用时注意装饰器的顺序
-- 太多个装饰器，生成一个对象时需要创建 1+n(装饰器实例)，   可以结合`工厂/生成器`组合使用
+- [《B站刘丹冰--装饰模式》](https://www.bilibili.com/video/BV1Cg411e7Xi/?spm_id_from=333.788&vd_source=f53bb49fb78a32947a9360dd16a1cf58)
+- 《Head First 第三篇装饰模式 P79》
+- 《大话设计模式 -- 第六章装饰模式 P44》
